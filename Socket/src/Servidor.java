@@ -34,7 +34,7 @@ public class Servidor {
                 break;
             
         }
-        return "El valor de la operacion " + opcion +" es igual a " + out;    
+        return "El valor de la operacion "+a+" " + opcion +" "+b +" es igual a " + out;    
     }
 
     public String suma(int a,int b){
@@ -50,9 +50,7 @@ public class Servidor {
         return Integer.toString(multiplicacion);
     }
     public String division(int a,int b){
-
         int division = a/b;
-        System.out.println(division);
         return Integer.toString(division);
     }
 
