@@ -1,3 +1,5 @@
+package Servidor;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -59,7 +61,7 @@ public class HiloDeCliente implements Runnable{
     }
 
     public String mostrarParticipantes(){
-        String mensaje="";
+        String mensaje="\nLista de participantes: \n";
         for (String persona : personas) {
             mensaje += persona+"\n";
         }

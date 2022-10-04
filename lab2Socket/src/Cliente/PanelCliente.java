@@ -7,7 +7,7 @@ public class PanelCliente{
 
     public PanelCliente(Scanner lectura){
         System.out.println("1) Anotar persona en la lista");
-        System.out.println("2) Mostrar ");
+        System.out.println("2) Mostrar lista de participantes ");
         System.out.print("Ingrese opcion: ");
         String opcion = lectura.nextLine();
 

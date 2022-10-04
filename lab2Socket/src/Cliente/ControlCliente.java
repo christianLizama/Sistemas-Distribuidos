@@ -19,7 +19,6 @@ public class ControlCliente implements Runnable{
             
             Thread hilo = new Thread(this);
             hilo.start();
-            enviarInformacion();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -35,6 +34,7 @@ public class ControlCliente implements Runnable{
     public void run(){
         try{
             while (true){
+                enviarInformacion();
                 String texto = dataInput.readUTF();
                 System.out.println(texto);
             }

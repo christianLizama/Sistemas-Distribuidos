@@ -14,11 +14,10 @@ public class ClienteChat{
         try{
             socket = new Socket("localhost", 5000);
             Scanner lectura = new Scanner(System.in);
-            while(true){
 
-                panel = new PanelCliente(lectura);
-                ControlCliente control = new ControlCliente(socket, panel);
-            }
+            panel = new PanelCliente(lectura);
+            ControlCliente control = new ControlCliente(socket, panel);
+            
         } catch (Exception e){
             e.printStackTrace();
         }
