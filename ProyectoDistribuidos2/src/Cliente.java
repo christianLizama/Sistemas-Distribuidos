@@ -36,6 +36,7 @@ public class Cliente implements Runnable {
 
     //Salir de toda las subastas
     public void desconectar(){
+        listo = true;
         try {
             in.close();
             out.close();
@@ -58,7 +59,7 @@ public class Cliente implements Runnable {
                 BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
                 while(!listo){
                     String mensaje = inReader.readLine();
-                    if(mensaje.equals("3")){
+                    if(mensaje.equals("3") || mensaje.equals("0")){
                         out.println(mensaje);
                         inReader.close();
                         desconectar();    

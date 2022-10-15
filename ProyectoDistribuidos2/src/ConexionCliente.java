@@ -3,18 +3,122 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+
+import Personas.Persona;
+import Productos.Subasta;
 
 class ConexionCliente implements Runnable{
 
     private Socket cliente;
     private BufferedReader in;
     private PrintWriter out;
-    private String nombre;
+    private Persona persona;
     private Servidor server;
+    private ArrayList<Subasta> subastas;
 
-    public ConexionCliente(Socket cliente,Servidor server){
+    public ConexionCliente(Socket cliente,Servidor server,ArrayList<Subasta> subastas){
         this.cliente = cliente;
         this.server = server;
+        this.subastas = subastas;
+    }
+
+    public Persona getPersona(){
+        return persona;
+    }
+
+    public void mostrarProductos(){
+        out.println("------Lista de Subastas------");
+        int i = 1;
+        for (Subasta subasta : subastas) {
+            out.println(i+")"+subasta.mostrarProducto());
+            i+=1;
+        }
+        out.println("Si desea salir escriba 0");
+        out.println("Ingrese opcion: ");
+    }
+
+    public void pujar(Subasta subasta){
+        try {
+            boolean ciclo=true;
+            while(ciclo){
+                String opcion;
+                
+                while((opcion = in.readLine())!= null){
+                    out.println("Producto en subasta: "+subasta.mostrarProducto());
+                    out.println("Precio actual: "+ subasta.obtenerPrecio());
+                    out.println("1)Pujar");
+                    out.println("2)Salir de esa puja");
+                    out.println("3)Salir de la subasta");
+                    switch (opcion) {
+                        //Pujar
+                        case "1":
+                            boolean comprobador = true;
+                            int precio = 0;
+                            while(comprobador){
+                                out.println("Ingrese precio: ");
+                                precio = Integer.parseInt(in.readLine());
+                                //Si el precio es mayor a 0 es un precio valido
+                                if(precio > 0 && precio>subasta.obtenerPrecio()){
+                                    out.println("Has pujado");
+                                    subasta.cambiarPrecio(precio);
+                                    //Solo para pujadores de cierta subasta
+                                    String mensaje = persona.getNombre() + " ha pujado por "+ precio;
+                                    server.broadcastSubasta(mensaje, subasta.getPersonas());
+                                    comprobador = false;
+                                }
+                                else{
+                                    out.println("Ingrese un precio valido");
+                                }
+                            }
+                            break;
+                        //Salir de la puja de ese articulo
+                        case "2":
+                            ciclo = false;
+                            break;
+                        //Salimos de la subasta 
+                        case "3":
+                            ciclo=false;
+                            server.broadcast(persona.getNombre() + " ha salido de la subasta");
+                            desconectar();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            
+        } catch (IOException e) {
+            // TODO: handle exception
+        }
+        
+
+    }
+
+    public void cicloSubasta(){
+        try {
+            boolean ciclo = true;
+            //mostrar subastas posibles
+            while(ciclo){
+                mostrarProductos();
+                //elige subasta 
+                
+                int eleccion = Integer.parseInt(in.readLine());
+                if(eleccion==0){
+                    server.broadcast(persona.getNombre() + " ha salido de la subasta");
+                    ciclo = false;
+                    desconectar();
+                }else{
+                    //lo manda a pujar()
+                    server.broadcast(persona.getNombre()+" Se ha unido a la subasta de " + subastas.get(eleccion-1).mostrarProducto());
+                    subastas.get(eleccion-1).agregarPersona(persona);
+                    pujar(subastas.get(eleccion-1));
+                }
+            }
+
+        } catch (IOException e) {
+            desconectar();
+        }
     }
 
     @Override
@@ -24,50 +128,10 @@ class ConexionCliente implements Runnable{
             out = new PrintWriter(cliente.getOutputStream(),true);
             in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
             out.println("Ingresar su nombre: ");
-            nombre = in.readLine();
+            String nombre = in.readLine();
             System.out.println(nombre + " Conectado con servidor");
-            server.broadcast(nombre+" Se ha unido a la puja");
-            String mensaje;
-            out.println("\n");
-            out.println("1)Pujar");
-            out.println("2)Salir de esa puja");
-            out.println("3)Salir de la subasta");
-            while((mensaje = in.readLine())!= null){
-                switch (mensaje) {
-                    //Pujar
-                    case "1":
-                        out.println("Ingrese precio: ");
-                        int precio = Integer.parseInt(in.readLine());
-                        boolean comprobador = true;
-                        while(comprobador){
-                            //Si el precio es mayor a 0 es un precio valido
-                            if(precio > 0){
-                                out.println("has pujado");
-                                out.println(precio);
-                                server.broadcast(nombre + " ha pujado por "+ precio);
-                                comprobador = false;
-                            }
-                            else{
-                                out.println("Ingrese un precio valido");
-                            }
-                        }
-
-                        break;
-                    //Salir de la puja de ese articulo
-                    case "2":
-                        break;
-                    //Salimos de la subasta 
-                    case "3":
-                        server.broadcast(nombre + " ha salido de la subasta");
-                        System.out.println(nombre+" Se ha desconectado del servidor");
-                        desconectar();
-                        break;
-                        
-                    default:
-                        break;
-                }
-            }
-
+            persona = new Persona(nombre);
+            cicloSubasta();
         } catch (IOException e) {
             // TODO: handle exception
             desconectar();
@@ -80,6 +144,7 @@ class ConexionCliente implements Runnable{
 
     //Salir de toda las subastas
     public void desconectar(){
+        System.out.println(persona.getNombre()+" Se ha desconectado del servidor");
         try {
             in.close();
             out.close();
