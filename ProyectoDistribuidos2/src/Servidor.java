@@ -67,12 +67,13 @@ public class Servidor implements Runnable{
     }
 
     //Enviar mensaje de un producto solo a los participantes de cierta subasta
-    public void broadcastSubasta(String mensaje,ArrayList<Persona> personasEnSubasta){
+    public void broadcastSubasta(String mensaje,Subasta subasta, Persona pujador){
         for (ConexionCliente conexionCliente : conexiones) {
             if(conexionCliente!=null){
-                for (Persona persona : personasEnSubasta) {
-                    if(persona.getNombre().equals(conexionCliente.getPersona().getNombre())){
+                for (Persona persona : subasta.getPersonas()) {
+                    if(persona.getNombre().equals(conexionCliente.getPersona().getNombre()) && !persona.getNombre().equals(pujador.getNombre())){
                         conexionCliente.enviarMensaje(mensaje);
+                        conexionCliente.opcionesPuja(subasta);
                     }
                 }
             }
@@ -92,7 +93,7 @@ public class Servidor implements Runnable{
         servidor.subastas.add(subastaA);
         servidor.subastas.add(subastaM);
         servidor.subastas.add(subastaC);
-
+        System.out.println("Servidor iniciado...");
         servidor.run();
     }
 }
