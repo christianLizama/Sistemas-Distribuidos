@@ -79,6 +79,7 @@ class ConexionCliente implements Runnable{
                     //Salir de la puja de ese articulo
                     case "2":
                         ciclo = false;
+                        subasta.eliminarPersona(persona);
                         break;
                     //Salimos de la subasta 
                     case "3":

@@ -25,7 +25,7 @@ public class Cliente implements Runnable {
             t.start();
 
             String inMensaje;
-
+            
             while((inMensaje = in.readLine())!=null){
                 System.out.println(inMensaje);
             }
@@ -43,11 +43,9 @@ public class Cliente implements Runnable {
             if(!cliente.isClosed()){
                 cliente.close();
             }
-            
         } catch (IOException e) {
             // TODO: handle exception
         }
-        
     }
 
     class InputControlador implements Runnable{
@@ -72,7 +70,6 @@ public class Cliente implements Runnable {
                 desconectar();
             }
         }
-
     } 
 
     public static void main(String[] args) {

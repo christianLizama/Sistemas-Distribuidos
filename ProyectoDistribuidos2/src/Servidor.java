@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import Datos.LecturaEscritura;
 import Personas.Persona;
 import Productos.Producto;
 import Productos.Subasta;
@@ -79,20 +80,17 @@ public class Servidor implements Runnable{
             }
         }
     }
-
+    
     public static void main(String[] args) {
-        Producto auto = new Producto("auto", 1000, false);
-        Producto casa = new Producto("casa", 2000000, false);
-        Producto moto = new Producto("moto", 1000, false);
-        
-        Subasta subastaA = new Subasta(auto);
-        Subasta subastaM = new Subasta(moto);
-        Subasta subastaC = new Subasta(casa);
-        
         Servidor servidor = new Servidor();
-        servidor.subastas.add(subastaA);
-        servidor.subastas.add(subastaM);
-        servidor.subastas.add(subastaC);
+        LecturaEscritura lecturaEscritura = new LecturaEscritura();
+        ArrayList<Producto> productos = lecturaEscritura.leer();
+        Subasta subasta;
+        for (Producto producto : productos) {
+            subasta = new Subasta(producto);
+            servidor.subastas.add(subasta);   
+        }
+
         System.out.println("Servidor iniciado...");
         servidor.run();
     }

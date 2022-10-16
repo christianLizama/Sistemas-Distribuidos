@@ -42,7 +42,11 @@ public class Subasta {
     }
 
     public void eliminarPersona(Persona persona){
-        personas.remove(persona);
+
+        Persona posibleGanador = ganador();
+        if(posibleGanador==null){
+            personas.remove(persona);
+        }
     }
 
     public void agregarPersona(Persona persona){
@@ -50,7 +54,7 @@ public class Subasta {
     }
 
      //Devolvemos el ganador
-     public Persona ganador(){
+    public Persona ganador(){
         if(personas.size() == 1){
             System.out.println("Ganador del remate "+personas.get(0).getNombre());
             producto.setVendido(true);
