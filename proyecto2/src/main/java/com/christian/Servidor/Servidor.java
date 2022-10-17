@@ -1,6 +1,7 @@
 package com.christian.Servidor;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -86,6 +87,18 @@ public class Servidor implements Runnable{
             }
         }
     }
+
+    //Actualizar lista de personas que no se han unido a una subasta
+    public void broadcastClientesSinSubasta(){
+        for (ConexionCliente conexionCliente : conexiones) {
+            if(conexionCliente!=null && conexionCliente.getPersona().getPrecio()==0){
+                conexionCliente.enviarMensaje("Se acaba de vender un producto");
+                conexionCliente.mostrarProductos();
+            }
+        }     
+    }
+
+
     
     public static void main(String[] args) {
         Servidor servidor = new Servidor();

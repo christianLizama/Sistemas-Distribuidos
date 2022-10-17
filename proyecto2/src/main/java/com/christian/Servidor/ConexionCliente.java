@@ -74,6 +74,7 @@ class ConexionCliente implements Runnable{
                     String opcion;
                     opcionesPuja(subasta);
                     opcion = in.readLine();
+                                        
                     if(!subastas.contains(subasta)){
                         ciclo=false;
                         break;
@@ -104,15 +105,19 @@ class ConexionCliente implements Runnable{
                         //Salir de la puja de ese articulo
                         case "2":
                             ciclo = false;
+                            Thread.sleep(10000);
                             
                             Persona posibleGanador = subasta.eliminarPersona(persona);
                             //Si ha ganado alguien 
                             if(posibleGanador != null){
+
                                 String retirado = persona.getNombre() + " se ha retirado de la subasta";
-                                String ganador = "Felicitaciones "+posibleGanador.getNombre() + " has comprado " + subasta.mostrarProducto() + " por " + subasta.obtenerPrecio();
+                                String ganador = "Felicitaciones "+posibleGanador.getNombre() + " has comprado " + subasta.mostrarProducto() + " por " + subasta.obtenerPrecio()+"\nPresione enter para volver al menu principal";
                                 server.broadcastSubasta(retirado, subasta, persona,true);
                                 server.broadcastSubasta(ganador, subasta, persona,true);
+                                out.println("Te has retirado de la subasta");
                                 eliminarSubasta(subasta);
+                                server.broadcastClientesSinSubasta();
                             }
                             //No ha ganado nadie
                             else{
@@ -138,6 +143,9 @@ class ConexionCliente implements Runnable{
         } catch (IOException e) {
             // TODO: handle exception
         }
+        catch(InterruptedException e2){
+            
+        }
         
 
     }
@@ -147,6 +155,7 @@ class ConexionCliente implements Runnable{
             boolean ciclo = true;
             //mostrar subastas posibles
             while(ciclo){
+                persona.setPrecio(0);
                 mostrarProductos();
                 //elige subasta 
                 
