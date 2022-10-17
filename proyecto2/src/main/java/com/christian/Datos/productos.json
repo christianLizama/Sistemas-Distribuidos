@@ -7,13 +7,13 @@
     },
     {
         "nombre":"Moto",
-        "precio":1000,
+        "precioActual":1000,
         "vendido":false,
         "ultimoPujador":null
     },
     {
         "nombre":"Casa",
-        "precio":2000000,
+        "precioActual":2000000,
         "vendido":false,
         "ultimoPujador":null
     }

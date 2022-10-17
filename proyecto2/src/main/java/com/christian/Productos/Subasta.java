@@ -14,6 +14,10 @@ public class Subasta {
         this.personas = new ArrayList<>();
     }
 
+    public void limpiarPersonas(){
+        this.personas = new ArrayList<>();
+    }
+
     public ArrayList<Persona> getPersonas() {
         return personas;
     }
@@ -41,12 +45,18 @@ public class Subasta {
         return producto.getPrecioActual();
     }
 
-    public void eliminarPersona(Persona persona){
+    public Producto getProducto(){
+        return producto;
+    }
 
-        Persona posibleGanador = ganador();
+    public Persona eliminarPersona(Persona eliminado){
+        Persona posibleGanador = ganador(eliminado);
+        //Si devuelve un null no gano nadie
         if(posibleGanador==null){
-            personas.remove(persona);
+            personas.remove(eliminado);
+            return null;
         }
+        return posibleGanador;
     }
 
     public void agregarPersona(Persona persona){
@@ -54,11 +64,19 @@ public class Subasta {
     }
 
      //Devolvemos el ganador
-    public Persona ganador(){
-        if(personas.size() == 1){
-            System.out.println("Ganador del remate "+personas.get(0).getNombre());
+    public Persona ganador(Persona eliminado){
+        //Si quedan dos personas y se esta retirando uno de los 2
+        if(personas.size() == 2){
+            Persona ganador = new Persona(null);
+            for (Persona persona : personas) {
+                if(!persona.getNombre().equals(eliminado.getNombre())){
+                    ganador = persona;
+                }
+            }
+            producto.setUltimoPujador(ganador);
             producto.setVendido(true);
-            return personas.get(0);
+            producto.setPrecioActual(ganador.getPrecio());
+            return ganador;
         }
         return null;
     }
