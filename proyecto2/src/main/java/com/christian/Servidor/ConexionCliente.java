@@ -130,29 +130,28 @@ class ConexionCliente implements Runnable{
                             break;
                         //Salir de la puja de ese articulo
                         case "2":
-                            ciclo = false;
                             
                             //Si la persona que se sale fue el ultimo pujador se borra 
-                            if(persona.getNombre().equals(subasta.getUltimoPujador().getNombre())){
-                                subasta.setUltimoPujador(null);
+                            if(subasta.getUltimoPujador()!=null){
+                                if(persona.getNombre().equals(subasta.getUltimoPujador().getNombre())){
+                                    enviarMensaje("No puede salir de la puja ya que fuiste el ultimo en ofertar");
+                                    break;
+                                }
                             }
-                            //Si solo hay una persona y se sale el mismo se reinicia el precio al inicial
-                            if(subasta.getPersonas().size()==1){
-                                subasta.getProducto().reiniciarPrecio();
-                            }
-                            
-                            server.broadcastSubasta("Estamos verificando un ganador, por favor espere", subasta, persona, true);
-                            Thread.sleep(10000);
+                            ciclo = false;
+                            server.broadcastSubastaTodos("Estamos verificando un ganador, por favor espere", subasta);
+                            Thread.sleep(10);
 
                             Persona posibleGanador = subasta.eliminarPersona(persona);
-                            //Si ha ganado alguien 
+                            //Si ha ganado alguien 1
                             if(posibleGanador != null){
 
                                 String retirado = persona.getNombre() + " se ha retirado de la subasta";
                                 String ganador = "Felicitaciones "+posibleGanador.getNombre() + " has comprado " + subasta.mostrarProducto() + " por " + subasta.obtenerPrecio()+"\nPresione enter para volver al menu principal";
                                 server.broadcastSubasta(retirado, subasta, persona,true);
                                 server.broadcastSubasta(ganador, subasta, persona,true);
-                                out.println("Te has retirado de la subasta");
+                                server.broadcastSubasta(posibleGanador.getNombre()+" Ha comprado el producto "+subasta.mostrarProducto()+" por "+subasta.obtenerPrecio(), subasta, posibleGanador, true);
+                                enviarMensaje("Te has retirado de la subasta");
                                 eliminarSubasta(subasta);
                                 server.broadcastClientesSinSubasta();
                                 estoyEnSubasta = false;
@@ -169,7 +168,15 @@ class ConexionCliente implements Runnable{
                             break;
                         //Salimos de la subasta 
                         case "3":
+                            //Verificamos primero que esta persona no haya sido la ultima en pujar
+                            if(subasta.getUltimoPujador()!=null){
+                                if(persona.getNombre().equals(subasta.getUltimoPujador().getNombre())){
+                                    enviarMensaje("No puede salir de la puja ya que fuiste el ultimo en ofertar");
+                                    break;
+                                }
+                            }
                             ciclo=false;
+                            //Si la persona que se sale fue el ultimo pujador se borra 
                             server.broadcast(persona.getNombre() + " ha salido de la subasta");
                             desconectar();
                             termino = false;
@@ -182,13 +189,9 @@ class ConexionCliente implements Runnable{
         
             
         } catch (IOException e) {
-            // TODO: handle exception
         }catch(InterruptedException e2){
-
         }
-        
         return termino;
-
     }
 
     public void cicloSubasta(){
@@ -223,7 +226,6 @@ class ConexionCliente implements Runnable{
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         try {
             out = new PrintWriter(cliente.getOutputStream(),true);
             in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
@@ -233,7 +235,6 @@ class ConexionCliente implements Runnable{
             persona = new Persona(nombre);
             cicloSubasta();
         } catch (IOException e) {
-            // TODO: handle exception
             desconectar();
         }
     }
@@ -251,12 +252,7 @@ class ConexionCliente implements Runnable{
             if(!cliente.isClosed()){
                 cliente.close();
             }
-            
         } catch (IOException e) {
-            // TODO: handle exception
         }
-        
     }
-
-
 }

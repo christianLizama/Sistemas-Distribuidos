@@ -9,7 +9,7 @@ public class Subasta {
     private ArrayList<Persona> personas;
     private Producto producto;
     private Persona ultimoPujador;
-
+    
     
 
     public Subasta(Producto producto) {
@@ -75,7 +75,7 @@ public class Subasta {
     //Devolvemos el ganador
     public Persona ganador(Persona eliminado){
         //Si quedan dos personas y se esta retirando uno de los 2
-        if(personas.size() == 2 && ultimoPujador!=null && !eliminado.getNombre().equals(ultimoPujador.getNombre())){
+        if(personas.size() == 2 && ultimoPujador!=null){
             Persona ganador = new Persona(null);
             for (Persona persona : personas) {
                 if(!persona.getNombre().equals(eliminado.getNombre())){
@@ -87,9 +87,7 @@ public class Subasta {
             producto.setPrecioActual(ganador.getPrecio());
             return ganador;
         }
-        else{
-            producto.reiniciarPrecio();
-        }
+        
         return null;
     }
     

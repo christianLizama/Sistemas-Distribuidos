@@ -9,7 +9,7 @@ public class Producto {
     private int precioInicial;
     private boolean vendido;
     private Persona ganador;
-
+    
     public Producto(String nombre, int precioActual, boolean vendido) {
         this.nombre = nombre;
         this.precioActual = precioActual;

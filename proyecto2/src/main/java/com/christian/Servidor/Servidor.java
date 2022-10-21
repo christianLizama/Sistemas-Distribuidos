@@ -1,7 +1,6 @@
 package com.christian.Servidor;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ public class Servidor implements Runnable{
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         try {
             server = new ServerSocket(puerto);
             pool = Executors.newCachedThreadPool();
@@ -42,7 +40,6 @@ public class Servidor implements Runnable{
             }
 
         } catch (IOException e) {
-            // TODO: handle exception
             desconectar();
         }
     }
@@ -59,7 +56,6 @@ public class Servidor implements Runnable{
                 conexionCliente.desconectar();
             }
         } catch (IOException e) {
-            // TODO: handle exception
         }
     }
 
@@ -88,6 +84,19 @@ public class Servidor implements Runnable{
         }
     }
 
+    //Enviar mensaje de un producto solo a los participantes de cierta subasta incluyendose a el mismo
+    public void broadcastSubastaTodos(String mensaje,Subasta subasta){
+        for (ConexionCliente conexionCliente : conexiones) {
+            if(conexionCliente!=null){
+                for (Persona persona : subasta.getPersonas()) {
+                    if(persona.getNombre().equals(conexionCliente.getPersona().getNombre())){
+                        conexionCliente.enviarMensaje(mensaje);
+                    }
+                }
+            }
+        }
+    }
+
     //Actualizar lista de personas que no se han unido a una subasta
     public void broadcastClientesSinSubasta(){
         for (ConexionCliente conexionCliente : conexiones) {
@@ -97,8 +106,6 @@ public class Servidor implements Runnable{
             }
         }     
     }
-
-
     
     public static void main(String[] args) {
         Servidor servidor = new Servidor();

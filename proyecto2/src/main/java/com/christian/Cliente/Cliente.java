@@ -17,7 +17,6 @@ public class Cliente implements Runnable {
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         try {
             cliente = new Socket(host,puerto);
             out = new PrintWriter(cliente.getOutputStream(),true);
@@ -46,7 +45,6 @@ public class Cliente implements Runnable {
                 cliente.close();
             }
         } catch (IOException e) {
-            // TODO: handle exception
         }
     }
 
