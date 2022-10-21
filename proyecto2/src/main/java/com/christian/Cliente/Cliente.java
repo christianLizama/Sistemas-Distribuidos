@@ -59,12 +59,17 @@ public class Cliente implements Runnable {
                 BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
                 while(!listo){
                     String mensaje = inReader.readLine();
-                    if(mensaje.equals("3") || mensaje.equals("0")){
-                        out.println(mensaje);
-                        inReader.close();
-                        desconectar();    
-                    }else{
-                        out.println(mensaje);
+                    if(mensaje!=null){
+                        if(mensaje.equals("3") || mensaje.equals("0")){
+                            out.println(mensaje);
+                            inReader.close();
+                            desconectar();    
+                        }else{
+                            out.println(mensaje);
+                        }
+                    }
+                    else{
+                        desconectar();
                     }
                 }
                 

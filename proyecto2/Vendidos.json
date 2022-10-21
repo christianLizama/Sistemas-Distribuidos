@@ -1,1 +1,1 @@
-[{"nombre":"Auto","precioActual":1300,"vendido":true,"ultimoPujador":{"nombre":"seba","precioPuja":1300}}]
+[{"nombre":"Auto","precioActual":0,"precioInicial":1000,"vendido":true,"ganador":{"nombre":"Seba","precioPuja":0}}]

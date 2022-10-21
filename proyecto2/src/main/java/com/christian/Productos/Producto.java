@@ -6,23 +6,24 @@ public class Producto {
 
     private String nombre;
     private int precioActual;
+    private int precioInicial;
     private boolean vendido;
-    private Persona ultimoPujador;
+    private Persona ganador;
 
     public Producto(String nombre, int precioActual, boolean vendido) {
         this.nombre = nombre;
         this.precioActual = precioActual;
         this.vendido = vendido;
     }
-
-    public void setUltimoPujador(Persona ultimoPujador) {
-        this.ultimoPujador = ultimoPujador;
+    public void setGanador(Persona ganador) {
+        this.ganador = ganador;
     }
-
-    public Persona getUltimoPujador() {
-        return ultimoPujador;
+    public Persona getGanador() {
+        return ganador;
     }
-
+    public void reiniciarPrecio(){
+        precioActual=precioInicial;
+    }
     public String getNombre() {
         return nombre;
     }

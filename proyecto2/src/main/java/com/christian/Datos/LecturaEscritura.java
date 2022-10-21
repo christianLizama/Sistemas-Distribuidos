@@ -68,7 +68,6 @@ public class LecturaEscritura {
         Gson gson = new Gson();
         Type userListType = new TypeToken<ArrayList<Producto>>(){}.getType();
         productos = gson.fromJson(json, userListType);      
-        System.out.println(productos.get(0).getPrecioActual());
         return productos;
     }
 

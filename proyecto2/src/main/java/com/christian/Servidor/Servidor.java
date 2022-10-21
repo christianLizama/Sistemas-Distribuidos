@@ -91,7 +91,7 @@ public class Servidor implements Runnable{
     //Actualizar lista de personas que no se han unido a una subasta
     public void broadcastClientesSinSubasta(){
         for (ConexionCliente conexionCliente : conexiones) {
-            if(conexionCliente!=null && conexionCliente.getPersona().getPrecio()==0){
+            if(conexionCliente!=null && conexionCliente.getEstoyEnSubasta() == false){
                 conexionCliente.enviarMensaje("Se acaba de vender un producto");
                 conexionCliente.mostrarProductos();
             }
