@@ -1,0 +1,31 @@
+[
+    {
+        "nombreProducto": "Auto",
+        "pujas": [
+            {
+                "nombre": "ckill",
+                "precio": "1200"
+            },
+            {
+                "nombre": "diego",
+                "precio": "1300"
+            },
+            {
+                "nombre": "ckill",
+                "precio": "1500"
+            },
+            {
+                "nombre": "xd",
+                "precio": "1600"
+            }
+        ]
+    },
+    {
+        "nombreProducto": "Moto",
+        "pujas": []
+    },
+    {
+        "nombreProducto": "Casa",
+        "pujas": []
+    }
+]

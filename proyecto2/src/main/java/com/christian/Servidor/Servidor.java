@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.christian.Datos.Historial;
 import com.christian.Datos.LecturaEscritura;
 import com.christian.Personas.Persona;
 import com.christian.Productos.Producto;
@@ -20,11 +21,13 @@ public class Servidor implements Runnable{
     private int puerto = 5000;
     private ArrayList<Subasta> subastas;
     private ArrayList<Producto> productosVendidos;
+    private ArrayList<Historial> historialPujas;
 
     public Servidor() {
         conexiones = new ArrayList<>();
         subastas = new ArrayList<>();
         productosVendidos = new ArrayList<>();
+        historialPujas = new ArrayList<>();
     }
 
     @Override
@@ -34,7 +37,8 @@ public class Servidor implements Runnable{
             pool = Executors.newCachedThreadPool();
             while(!listo){
                 Socket socket = server.accept();
-                ConexionCliente cliente = new ConexionCliente(socket,this,subastas,productosVendidos);
+
+                ConexionCliente cliente = new ConexionCliente(socket,this,subastas,productosVendidos,historialPujas);
                 conexiones.add(cliente);
                 pool.execute(cliente);
             }
@@ -115,6 +119,7 @@ public class Servidor implements Runnable{
         for (Producto producto : productos) {
             subasta = new Subasta(producto);
             servidor.subastas.add(subasta);   
+            servidor.historialPujas.add(new Historial(subasta.mostrarProducto()));
         }
 
         System.out.println("Servidor iniciado...");

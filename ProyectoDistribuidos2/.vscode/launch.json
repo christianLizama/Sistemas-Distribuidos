@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Servidor",
+            "request": "launch",
+            "mainClass": "Servidor",
+            "projectName": "ProyectoDistribuidos2_fe7f9fd2"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

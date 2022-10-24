@@ -6,9 +6,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import com.christian.Datos.Historial;
 import com.christian.Datos.LecturaEscritura;
+import com.christian.Datos.Pujador;
 import com.christian.Personas.*;
 import com.christian.Productos.*;
+
+
 
 class ConexionCliente implements Runnable{
 
@@ -19,13 +24,15 @@ class ConexionCliente implements Runnable{
     private Servidor server;
     private ArrayList<Subasta> subastas;
     private ArrayList<Producto> vendidos;
+    private ArrayList<Historial> historial;
     private boolean estoyEnSubasta = false;
 
-    public ConexionCliente(Socket cliente,Servidor server,ArrayList<Subasta> subastas,ArrayList<Producto> productosVendidos){
+    public ConexionCliente(Socket cliente,Servidor server,ArrayList<Subasta> subastas,ArrayList<Producto> productosVendidos, ArrayList<Historial> historial ){
         this.cliente = cliente;
         this.server = server;
         this.subastas = subastas;
         this.vendidos = productosVendidos;
+        this.historial = historial;
     }
 
     public void setEstoyEnSubasta(boolean estoyEnSubasta) {
@@ -117,6 +124,14 @@ class ConexionCliente implements Runnable{
                                         comprobador = false;
                                         termino = true;
                                         motivarGente(subasta);
+                                        String pujadorNombre = persona.getNombre();
+                                        String nombreProducto = subasta.mostrarProducto();
+                                        Pujador historiaPuja = new Pujador(pujadorNombre, precio+"");
+                                        for (Historial h : historial) {
+                                            if(h.getNombreProducto().equals(nombreProducto)){
+                                                h.agregarPersona(historiaPuja);
+                                            }
+                                        }
                                     }
                                     else{
                                         out.println("Ingrese un precio valido");
@@ -140,12 +155,13 @@ class ConexionCliente implements Runnable{
                             }
                             ciclo = false;
                             server.broadcastSubastaTodos("Estamos verificando un ganador, por favor espere", subasta);
-                            Thread.sleep(10);
+                            Thread.sleep(5000);
 
                             Persona posibleGanador = subasta.eliminarPersona(persona);
                             //Si ha ganado alguien 1
                             if(posibleGanador != null){
-
+                                LecturaEscritura escribir = new LecturaEscritura();
+                                escribir.escribirHistorialPujas(historial);
                                 String retirado = persona.getNombre() + " se ha retirado de la subasta";
                                 String ganador = "Felicitaciones "+posibleGanador.getNombre() + " has comprado " + subasta.mostrarProducto() + " por " + subasta.obtenerPrecio()+"\nPresione enter para volver al menu principal";
                                 server.broadcastSubasta(retirado, subasta, persona,true);
@@ -155,6 +171,7 @@ class ConexionCliente implements Runnable{
                                 eliminarSubasta(subasta);
                                 server.broadcastClientesSinSubasta();
                                 estoyEnSubasta = false;
+                                
                             }
                             //No ha ganado nadie
                             else{
