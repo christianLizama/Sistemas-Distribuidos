@@ -31,6 +31,19 @@ public class LecturaEscritura {
         }
     }
 
+    public void escribirHistorialPujas(ArrayList<Historial> pujas){
+        String vendidos = "Historial.json";
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        try {
+            Writer writer = new FileWriter(vendidos);
+            gson.toJson(pujas, writer); //Crea el json
+            writer.close(); 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public ArrayList<Producto> leer(){
         File archivo = null;
